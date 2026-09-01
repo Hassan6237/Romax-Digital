@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Log In{% endblock %}
+{% block content %}
+<div class="auth-card">
+  <h2 class="section-title">Welcome back</h2>
+  <p class="section-sub">Log in to save pass designs and connect real Apple &amp; Google Wallet credentials.</p>
+
+  <form method="POST" class="auth-form">
+    <div class="field-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required autocomplete="email"
+             value="{{ form.email or '' }}" placeholder="you@yourorganisation.co.uk" />
+    </div>
+    <div class="field-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required autocomplete="current-password"
+             placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" />
+    </div>
+    <label class="radio-option auth-remember">
+      <input type="checkbox" name="remember" />
+      <span>Remember me</span>
+    </label>
+    <button type="submit" class="btn-primary auth-submit">Log In</button>
+  </form>
+
+  <p class="auth-switch">Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign up free</a></p>
+</div>
+{% endblock %}

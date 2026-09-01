@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}Select Subscription{% endblock %}
+{% block content %}
+<div class="subscription-wrap">
+  <h2 class="section-title">Select Your Subscription</h2>
+  <p class="section-sub">Choose the plan and billing frequency that fits your organisation. You can change this later.</p>
+
+  <div class="pricing-note">Pricing to be confirmed — a member of the Romax team will follow up before you go live with production data.</div>
+
+  <form method="POST" id="subscriptionForm">
+    <div class="plan-grid" id="planGrid">
+      {% for plan in plans %}
+      <label class="plan-card {{ 'active' if plan.id == selected_plan else '' }}" data-plan="{{ plan.id }}">
+        <input type="radio" name="plan" value="{{ plan.id }}" style="display:none"
+               {{ 'checked' if plan.id == selected_plan else '' }} />
+        <h4>{{ plan.name }}</h4>
+        <div class="plan-price">Pricing TBD</div>
+        <ul>
+          {% for f in plan.features %}
+          <li>&#10003; {{ f }}</li>
+          {% endfor %}
+        </ul>
+      </label>
+      {% endfor %}
+    </div>
+
+    <span class="card-colours-label">Billing Frequency</span>
+    <div class="billing-toggle">
+      <label>
+        <input type="radio" name="billing_frequency" value="monthly" {{ 'checked' if billing_frequency == 'monthly' else '' }} />
+        <span>Monthly</span>
+      </label>
+      <label>
+        <input type="radio" name="billing_frequency" value="annual" {{ 'checked' if billing_frequency == 'annual' else '' }} />
+        <span>Annual</span>
+      </label>
+    </div>
+
+    <div class="field-group" style="margin-bottom:1.4rem">
+      <label>Payment Method</label>
+      <input type="text" placeholder="Card details collected securely at go-live — not required for this prototype" disabled />
+    </div>
+
+    <button type="submit" class="btn-primary auth-submit">Confirm Subscription</button>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll('.plan-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      card.querySelector('input[type="radio"]').checked = true;
+    });
+  });
+</script>
+{% endblock %}

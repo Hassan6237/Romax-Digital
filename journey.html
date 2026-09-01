@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Romax Digital – Digital Card Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="{{ url_for('index') }}" class="nav-logo">
+      <span class="logo-rd" title="Replace with your company logo"><img src="/static/img/company-logo.png" alt="Company logo" onerror="this.style.display='none'; this.parentElement.textContent='LOGO';" /></span>
+      <span class="logo-text">Romax Digital</span>
+    </a>
+    <ul class="nav-links">
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('portal.dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('portal.subscription') }}">Pricing</a></li>
+        <li><a href="{{ url_for('portal.wallet_settings') }}">Wallet Setup</a></li>
+        <li><a href="{{ url_for('auth.logout') }}" class="btn-nav">Log Out</a></li>
+      {% else %}
+        <li><a href="{{ url_for('portal.subscription') }}">Pricing</a></li>
+        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+        <li><a href="{{ url_for('auth.signup') }}" class="btn-nav">Sign Up</a></li>
+      {% endif %}
+    </ul>
+    <button class="burger" id="burgerBtn" aria-label="Menu">&#9776;</button>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero journey-hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-content journey-hero-content">
+      <span class="hero-eyebrow">Digital Card Platform</span>
+      <h1 class="hero-title">Choose Your<br/><em>Journey</em></h1>
+      <p class="hero-sub">Tell us how you'd like to get started — evaluate the platform yourself in minutes, or let our team build a fully branded solution with you.</p>
+    </div>
+  </header>
+
+  <!-- JOURNEY CHOICE -->
+  <section class="journey-section">
+    <div class="journey-grid">
+
+      <!-- OPTION 1: SELF-SERVICE -->
+      <div class="journey-card">
+        <span class="journey-tag">Option 1</span>
+        <h2>Self-Service</h2>
+        <p class="journey-desc">Best for organisations who want to configure everything themselves.</p>
+        <ul class="journey-features">
+          <li><span class="feat-yes">&#10003;</span> Self-service platform</li>
+          <li><span class="feat-yes">&#10003;</span> Standard onboarding</li>
+          <li><span class="feat-yes">&#10003;</span> Online support</li>
+          <li><span class="feat-no">&#10007;</span> No implementation consultancy</li>
+          <li><span class="feat-no">&#10007;</span> No branded email setup</li>
+        </ul>
+        <a href="{{ url_for('trial') }}" class="btn-primary journey-btn">Start Free Trial</a>
+      </div>
+
+      <!-- OPTION 2: CUSTOMIZE SOLUTION -->
+      <div class="journey-card journey-card-bespoke">
+        <span class="journey-tag journey-tag-gold">Option 2</span>
+        <h2>Customize Solution</h2>
+        <p class="journey-desc">Best for organisations requiring a fully branded digital card experience.</p>
+        <ul class="journey-features">
+          <li><span class="feat-yes">&#10003;</span> Discovery meeting</li>
+          <li><span class="feat-yes">&#10003;</span> Branded emails</li>
+          <li><span class="feat-yes">&#10003;</span> Custom domains</li>
+          <li><span class="feat-yes">&#10003;</span> Technical implementation &amp; consultancy</li>
+          <li><span class="feat-yes">&#10003;</span> Managed onboarding</li>
+        </ul>
+        <a href="https://romax.co.uk/digital/contact-us/" target="_blank" class="btn-ghost journey-btn">Talk to Our Team</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="nav-logo" style="margin-bottom:.5rem">
+          <span class="logo-rd" title="Replace with your company logo"><img src="/static/img/company-logo.png" alt="Company logo" onerror="this.style.display='none'; this.parentElement.textContent='LOGO';" /></span>
+          <span class="logo-text">Romax Digital</span>
+        </div>
+        <p style="color:rgba(255,255,255,.5);font-size:.85rem">Romax Digital Platform — Prototype</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://romax.co.uk/digital/" target="_blank">Romax Digital Platform</a>
+        <a href="https://romax.co.uk/digital/products/digital-membership-cards/" target="_blank">Digital Cards</a>
+        <a href="https://romax.co.uk/digital/contact-us/" target="_blank">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('burgerBtn')?.addEventListener('click', () => {
+      const links = document.querySelector('.nav-links');
+      if (!links) return;
+      const open = links.style.display === 'flex';
+      links.style.display = open ? 'none' : 'flex';
+      links.style.flexDirection = 'column';
+      links.style.position = 'absolute';
+      links.style.top = '64px';
+      links.style.right = '1rem';
+      links.style.background = 'var(--surface-2)';
+      links.style.border = '1px solid var(--border)';
+      links.style.padding = '1rem';
+      links.style.borderRadius = 'var(--radius-sm)';
+      links.style.gap = '.8rem';
+      links.style.zIndex = '200';
+    });
+  </script>
+</body>
+</html>

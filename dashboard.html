@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-wrap">
+  <div class="dashboard-head">
+    <div>
+      <h2 class="section-title">Hi {{ current_user.name.split(' ')[0] }} &#128075;</h2>
+      <p class="section-sub">Your saved pass designs and Wallet connection status.</p>
+    </div>
+    <a href="{{ url_for('trial') }}#creator" class="btn-primary">+ New Pass</a>
+  </div>
+
+  <div class="wallet-status-row">
+    <div class="wallet-status-card">
+      <div>
+        <strong>Apple Wallet</strong>
+        <p>{{ 'Certificates connected. Passes are signed and installable.' if current_user.apple_wallet_ready else 'Not connected yet. Passes export as unsigned previews.' }}</p>
+      </div>
+      <span class="badge-status {{ 'badge-ready' if current_user.apple_wallet_ready else 'badge-pending' }}">
+        {{ 'Connected' if current_user.apple_wallet_ready else 'Not connected' }}
+      </span>
+    </div>
+    <div class="wallet-status-card">
+      <div>
+        <strong>Google Wallet</strong>
+        <p>{{ 'Service account connected. Real Add-to-Wallet links.' if current_user.google_wallet_ready else 'Not connected yet. Passes export as JSON previews.' }}</p>
+      </div>
+      <span class="badge-status {{ 'badge-ready' if current_user.google_wallet_ready else 'badge-pending' }}">
+        {{ 'Connected' if current_user.google_wallet_ready else 'Not connected' }}
+      </span>
+    </div>
+  </div>
+  <div style="display:flex;gap:1.4rem;align-items:center;margin-bottom:2rem;flex-wrap:wrap">
+    <a class="pass-info-title" style="display:inline-block" href="{{ url_for('portal.wallet_settings') }}">Manage Wallet Setup &#8594;</a>
+    <a class="pass-info-title" style="display:inline-block" href="{{ url_for('portal.subscription') }}">
+      {{ 'Manage Subscription' if current_user.selected_plan else 'Go Live: Select Subscription' }} &#8594;
+    </a>
+  </div>
+
+  <h3 class="editor-title" style="margin-bottom:1rem">Saved Passes ({{ passes|length }})</h3>
+
+  {% if passes %}
+  <div class="passes-grid">
+    {% for p in passes %}
+    <div class="pass-card" data-accent-color="{{ p.config.get('primary_color', '#C9952A') }}">
+      <div class="pass-card-top">
+        <strong>{{ p.brand_name or 'Untitled Pass' }}</strong>
+        <span class="variant-tag">{{ p.design_variant }}</span>
+      </div>
+      <p class="pass-card-type">{{ p.pass_type or 'Membership Card' }}</p>
+      <p class="pass-card-meta">Saved {{ p.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+      <div class="pass-card-actions">
+        <a href="{{ url_for('trial') }}?load_pass={{ p.id }}#creator" class="btn-issue-pass">Open in Creator</a>
+        <button class="btn-remove-field" data-delete-pass="{{ p.id }}" title="Delete">&#x2715;</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert" style="display:block">You haven't saved any passes yet. Create one and hit "Save Design" to see it here.</div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('[data-accent-color]').forEach(card => {
+  card.style.borderLeft = `4px solid ${card.getAttribute('data-accent-color')}`;
+});
+
+document.querySelectorAll('[data-delete-pass]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Delete this saved pass?')) return;
+    const id = btn.getAttribute('data-delete-pass');
+    const res = await fetch(`/api/my-passes/${id}`, { method: 'DELETE' });
+    if (res.ok) btn.closest('.pass-card').remove();
+  });
+});
+</script>
+{% endblock %}

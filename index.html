@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Romax Digital: Website to Wallet Pass Creator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body
+  data-logged-in="{{ 'true' if current_user.is_authenticated else 'false' }}"
+  data-apple-ready="{{ 'true' if current_user.is_authenticated and current_user.apple_wallet_ready else 'false' }}"
+  data-google-ready="{{ 'true' if current_user.is_authenticated and current_user.google_wallet_ready else 'false' }}"
+>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="{{ url_for('index') }}" class="nav-logo">
+      <span class="logo-rd" title="Replace with your company logo"><img src="/static/img/company-logo.png" alt="Company logo" onerror="this.style.display='none'; this.parentElement.textContent='LOGO';" /></span>
+      <span class="logo-text">Romax Digital</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#creator">Creator</a></li>
+      <li><a href="#crm">Members</a></li>
+      <li><a href="#verify">Verify</a></li>
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('portal.dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('portal.subscription') }}">Pricing</a></li>
+        <li><a href="{{ url_for('portal.wallet_settings') }}">Wallet Setup</a></li>
+        <li><a href="{{ url_for('auth.logout') }}" class="btn-nav">Log Out</a></li>
+      {% else %}
+        <li><a href="{{ url_for('portal.subscription') }}">Pricing</a></li>
+        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+        <li><a href="{{ url_for('auth.signup') }}" class="btn-nav">Sign Up</a></li>
+      {% endif %}
+    </ul>
+    <button class="burger" id="burgerBtn" aria-label="Menu">&#9776;</button>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">Romax Digital Platform, Prototype</span>
+      <h1 class="hero-title">Turn Any Website<br/><em>Into a Wallet Pass</em></h1>
+      <p class="hero-sub">Enter a URL. See your branded digital card. Add it to Apple or Google Wallet in seconds.</p>
+      <div class="hero-cta-group">
+        <a href="#creator" class="btn-primary">Start Creating</a>
+        <a href="https://romax.co.uk/digital/" target="_blank" class="btn-ghost">Learn More ↗</a>
+      </div>
+      <div class="hero-badges">
+        <span class="badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> Apple Wallet</span>
+        <span class="badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 10h20"/></svg> Google Wallet</span>
+        <span class="badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> No Code</span>
+      </div>
+    </div>
+    <div class="hero-phone-mockup">
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-card" id="heroCard">
+            <div class="phone-card-header">
+              <div class="phone-card-logo" id="heroLogo">RD</div>
+              <div class="phone-card-org" id="heroOrg">Your Organisation</div>
+            </div>
+            <div class="phone-card-name">Digital Member</div>
+            <div class="phone-card-meta">
+              <span><small>TIER</small><br/>Gold</span>
+              <span><small>VALID UNTIL</small><br/>31/12/2026</span>
+            </div>
+            <div class="phone-card-qr">
+              <div class="qr-placeholder">
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                  <rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" stroke-width="3"/>
+                  <rect x="8" y="8" width="8" height="8" fill="currentColor"/>
+                  <rect x="38" y="2" width="20" height="20" rx="2" stroke="currentColor" stroke-width="3"/>
+                  <rect x="44" y="8" width="8" height="8" fill="currentColor"/>
+                  <rect x="2" y="38" width="20" height="20" rx="2" stroke="currentColor" stroke-width="3"/>
+                  <rect x="8" y="44" width="8" height="8" fill="currentColor"/>
+                  <rect x="28" y="28" width="4" height="4" fill="currentColor"/>
+                  <rect x="36" y="28" width="4" height="4" fill="currentColor"/>
+                  <rect x="44" y="28" width="4" height="4" fill="currentColor"/>
+                  <rect x="28" y="36" width="4" height="4" fill="currentColor"/>
+                  <rect x="44" y="36" width="4" height="4" fill="currentColor"/>
+                  <rect x="36" y="44" width="4" height="4" fill="currentColor"/>
+                  <rect x="52" y="44" width="4" height="4" fill="currentColor"/>
+                  <rect x="52" y="52" width="4" height="4" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- STEPS STRIP -->
+  <section class="steps-strip">
+    <div class="step"><span class="step-num">01</span><p>Enter website URL</p></div>
+    <div class="step-arrow">→</div>
+    <div class="step"><span class="step-num">02</span><p>AI extracts branding</p></div>
+    <div class="step-arrow">→</div>
+    <div class="step"><span class="step-num">03</span><p>Preview & edit pass</p></div>
+    <div class="step-arrow">→</div>
+    <div class="step"><span class="step-num">04</span><p>Export or go live</p></div>
+  </section>
+
+  <!-- MAIN CREATOR SECTION -->
+  <section class="creator" id="creator">
+    <div class="creator-inner">
+
+      <!-- LEFT: Input + Editor -->
+      <div class="creator-left">
+        <h2 class="section-title">Create Your Pass</h2>
+
+        <!-- URL Input -->
+        <div class="url-input-group">
+          <label for="websiteUrl">Enter your website URL</label>
+          <div class="url-row">
+            <input type="url" id="websiteUrl" placeholder="https://yourorganisation.co.uk"
+              autocomplete="off" spellcheck="false" />
+            <button class="btn-create" id="btnCreate">
+              <span id="btnCreateText">Create Pass</span>
+              <span class="spinner hidden" id="spinner"></span>
+            </button>
+          </div>
+          <div class="quick-examples">
+            Try:
+            <button class="pill-btn" onclick="quickFill('https://www.englishheritage.org.uk')">English Heritage</button>
+            <button class="pill-btn" onclick="quickFill('https://www.nationaltrust.org.uk')">National Trust</button>
+            <button class="pill-btn" onclick="quickFill('https://www.thegymsgroup.com')">The Gym</button>
+          </div>
+        </div>
+
+        <!-- Error / info banner -->
+        <div id="alertBanner" class="alert hidden"></div>
+
+        <!-- Design Variant Picker -->
+        <div class="design-variants-section hidden" id="designVariantsSection">
+          <span class="design-variants-label">Choose a layout: same brand, 3 distinct card designs</span>
+          <div class="variant-grid" id="variantGrid"></div>
+        </div>
+
+        <!-- Completeness Score -->
+        <div class="completeness-widget hidden" id="completenessWidget">
+          <div class="completeness-header">
+            <span>Pass Completeness</span>
+            <span id="completenessScore" class="score-badge">0%</span>
+          </div>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+          <ul id="completenessHints" class="hints-list"></ul>
+        </div>
+
+        <!-- Editor Panel -->
+        <div class="editor-panel hidden" id="editorPanel">
+          <h3 class="editor-title">Customise Your Pass</h3>
+
+          <!-- PASS TYPE -->
+          <div class="pass-type-section">
+            <span class="pass-type-label">Pass Type</span>
+            <div class="pass-type-grid" id="passTypeGrid">
+              <button class="pass-type-btn active" data-type="Membership Card" onclick="selectPassType(this)">&#x1F4AA; Membership</button>
+              <button class="pass-type-btn" data-type="Loyalty Card" onclick="selectPassType(this)">&#11088; Loyalty</button>
+              <button class="pass-type-btn" data-type="Event Pass" onclick="selectPassType(this)">&#x1F3AB; Event</button>
+              <button class="pass-type-btn" data-type="Access Card" onclick="selectPassType(this)">&#x1F511; Access</button>
+              <button class="pass-type-btn" data-type="Supporter Card" onclick="selectPassType(this)">&#x2764;&#xFE0F; Supporter</button>
+              <button class="pass-type-btn" data-type="Annual Pass" onclick="selectPassType(this)">&#x1F4C5; Annual</button>
+            </div>
+            <select id="fPassType" style="display:none">
+              <option>Membership Card</option><option>Loyalty Card</option>
+              <option>Event Pass</option><option>Access Card</option>
+              <option>Supporter Card</option><option>Annual Pass</option>
+            </select>
+          </div>
+
+          <!-- LOGO + IMAGE UPLOAD -->
+          <div class="card-colours-section">
+            <span class="card-colours-label">Logo &amp; Card Image</span>
+            <div class="upload-row">
+              <div class="upload-field">
+                <label>Logo (square)</label>
+                <input type="file" id="fLogoUpload" accept="image/*" />
+                <button type="button" class="btn-remove-field" id="btnClearLogo" title="Remove logo">&#x2715;</button>
+              </div>
+              <div class="upload-field">
+                <label>Banner image (Image Strip layout)</label>
+                <input type="file" id="fBannerUpload" accept="image/*" />
+                <button type="button" class="btn-remove-field" id="btnClearBanner" title="Remove image">&#x2715;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ORG + TITLE -->
+          <div class="field-grid" style="margin-bottom:1rem">
+            <div class="field-group">
+              <label>Organisation Name</label>
+              <input type="text" id="fBrandName" placeholder="Your Organisation" />
+            </div>
+            <div class="field-group">
+              <label>Pass Title</label>
+              <input type="text" id="fPassTitle" placeholder="e.g. Access Card" />
+            </div>
+          </div>
+
+          <!-- CARD COLOURS -->
+          <div class="card-colours-section">
+            <span class="card-colours-label">Card Colours</span>
+            <div class="card-colours-row">
+              <div class="colour-swatch-wrap">
+                <input type="color" class="colour-swatch" id="fPrimaryColor" value="#1A2E44" />
+                <label>Background</label>
+              </div>
+              <div class="colour-swatch-wrap">
+                <input type="color" class="colour-swatch" id="fTextColor" value="#FFFFFF" />
+                <label>Text</label>
+              </div>
+              <div class="colour-swatch-wrap">
+                <input type="color" class="colour-swatch" id="fSecondaryColor" value="#C9952A" />
+                <label>Accent</label>
+              </div>
+              <input type="hidden" id="fPrimaryColorHex" value="#1A2E44" />
+              <input type="hidden" id="fSecondaryColorHex" value="#C9952A" />
+            </div>
+          </div>
+
+          <!-- CARD FIELDS -->
+          <div class="card-fields-section">
+            <span class="card-fields-label">Card Fields</span>
+            <div id="cardFieldsList">
+              <div class="card-field-row">
+                <input type="text" placeholder="Label" value="Name" class="field-label-input" />
+                <input type="text" placeholder="Value" id="fMemberName" class="field-value-input" />
+                <button class="btn-remove-field" onclick="removeCardField(this)" title="Remove">&#x2715;</button>
+              </div>
+              <div class="card-field-row">
+                <input type="text" placeholder="Label" value="Tier" class="field-label-input" />
+                <input type="text" placeholder="Value" id="fTier" class="field-value-input" />
+                <button class="btn-remove-field" onclick="removeCardField(this)" title="Remove">&#x2715;</button>
+              </div>
+            </div>
+            <button class="btn-add-field" onclick="addCardField()">+ Add field</button>
+          </div>
+
+          <!-- QR / BARCODE -->
+          <div class="barcode-section">
+            <span class="barcode-section-label">QR Code / Barcode</span>
+            <div class="barcode-radio-group">
+              <label class="radio-option">
+                <input type="radio" name="barcodeType" value="QR" id="radioQR" onchange="setBarcodeType('QR')" />
+                <span>QR Code</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="barcodeType" value="BARCODE" id="radioBarcode" onchange="setBarcodeType('BARCODE')" />
+                <span>Barcode</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="barcodeType" value="NONE" id="radioNone" onchange="setBarcodeType('NONE')" checked />
+                <span>None</span>
+              </label>
+            </div>
+            <input type="text" class="barcode-url-input" id="fQrValue" placeholder="https://www.yourorganisation.co.uk" />
+          </div>
+
+          <!-- EXPIRY -->
+          <div class="expiry-section">
+            <span class="expiry-section-label">Expiry</span>
+            <div class="field-group">
+              <select id="fExpiry" onchange="toggleCustomExpiry(this.value)">
+                <option value="1 month from today">1 month from today</option>
+                <option value="3 months from today">3 months from today</option>
+                <option value="6 months from today">6 months from today</option>
+                <option value="12 months from today" selected>12 months from today</option>
+                <option value="2 years from today">2 years from today</option>
+                <option value="No expiry">No expiry</option>
+                <option value="custom">Custom date&#x2026;</option>
+              </select>
+            </div>
+            <input type="text" id="fExpiryCustom" class="barcode-url-input" placeholder="DD/MM/YYYY" style="margin-top:.5rem;display:none" />
+          </div>
+
+          <!-- CONTACT -->
+          <div class="field-grid" style="margin-bottom:1rem">
+            <div class="field-group">
+              <label>Contact Email</label>
+              <input type="email" id="fEmail" placeholder="hello@yourorg.co.uk" />
+            </div>
+            <div class="field-group">
+              <label>Phone</label>
+              <input type="text" id="fPhone" placeholder="+44 ..." />
+            </div>
+          </div>
+
+          <button class="btn-update" id="btnUpdate">&#8635; Update Preview</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Live Preview -->
+      <div class="creator-right">
+        <div class="preview-label">Live Preview</div>
+
+        <!-- Wallet toggle -->
+        <div class="wallet-tabs" id="walletTabs">
+          <button class="wallet-tab active" onclick="switchWallet('apple', event)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            Apple Wallet
+          </button>
+          <button class="wallet-tab" onclick="switchWallet('google', event)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Google Wallet
+          </button>
+        </div>
+
+        <!-- Apple Wallet Preview -->
+        <div class="wallet-preview-wrap" id="applePreview">
+          <div class="apple-pass" id="appleCard">
+            <div class="apple-pass-header">
+              <div class="apple-org-logo" id="prevLogo">RD</div>
+              <div class="apple-org-name" id="prevOrgName">Your Organisation</div>
+              <div class="apple-pass-type" id="prevPassType">Membership Card</div>
+            </div>
+            <div class="apple-pass-hero">
+              <div class="apple-member-name" id="prevMemberName">Digital Member</div>
+            </div>
+            <div class="apple-pass-fields"></div>
+            <div class="apple-pass-barcode" id="barcodeArea">
+              <div id="qrCanvas" style="line-height:0"></div>
+            </div>
+            <div class="apple-pass-banner" id="appleBanner"></div>
+          </div>
+        </div>
+        <div class="layout-caption" id="layoutCaption">Classic Corner layout</div>
+
+        <!-- Google Wallet Preview -->
+        <div class="wallet-preview-wrap hidden" id="googlePreview">
+          <div class="google-pass" id="googleCard">
+            <div class="google-pass-top">
+              <div class="google-org-logo" id="gPrevLogo">RD</div>
+              <div>
+                <div class="google-org-name" id="gPrevOrgName">Your Organisation</div>
+                <div class="google-pass-type" id="gPrevPassType">Membership Card</div>
+              </div>
+            </div>
+            <div class="google-member" id="gPrevMemberName">Digital Member</div>
+            <div class="google-fields"></div>
+            <div class="google-barcode">
+              <div id="qrCanvasGoogle" style="line-height:0"></div>
+            </div>
+            <div class="google-pass-banner" id="googleBanner"></div>
+          </div>
+        </div>
+
+        <!-- Pass Info Panel -->
+        <div class="pass-info-panel hidden" id="passInfoPanel">
+          <h4 class="pass-info-title">Pass Information</h4>
+          <table class="pass-info-table" id="passInfoTable"></table>
+        </div>
+
+        <!-- Export Actions -->
+        <div class="export-actions hidden" id="exportActions">
+          <button class="btn-export" id="btnExportApple">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Add to Apple Wallet (.pkpass)
+          </button>
+          <button class="btn-export" id="btnExportGoogle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Add to Google Wallet
+          </button>
+          <button class="btn-save-design" id="btnSaveDesign">&#9733; Save Design</button>
+          <button class="btn-share" id="btnShare">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Send to Team
+          </button>
+        </div>
+        <div id="walletResultBanner" class="hidden"></div>
+
+        <!-- CTA -->
+        <div class="cta-platform hidden" id="ctaPlatform">
+          <div class="cta-inner">
+            <div class="cta-icon">🚀</div>
+            <div>
+              <strong>Like this pass?</strong>
+              <p>Create it properly on the Romax Digital Card Platform. Manage members, issue passes, update details and connect to Apple &amp; Google Wallet.</p>
+            </div>
+          </div>
+          <div class="cta-buttons">
+            <a href="https://romax.co.uk/digital/" target="_blank" class="btn-cta-primary">Create on Digital Card Platform</a>
+            <a href="https://romax.co.uk/digital/contact-us/" target="_blank" class="btn-cta-ghost">Book a Demo</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CRM / MEMBERS PANEL -->
+  <section class="crm-section" id="crm">
+    <div class="crm-inner">
+      <h2 class="section-title">Member Management</h2>
+      <p class="section-sub">Track members, renewals and check-ins from one dashboard.</p>
+      <div class="crm-controls">
+        <input type="text" id="memberSearch" placeholder="Search members…" />
+        <select id="memberFilter">
+          <option value="">All Statuses</option>
+          <option value="Active">Active</option>
+          <option value="Expired">Expired</option>
+        </select>
+        <button type="button" class="btn-load-members" id="btnLoadMembers">Load Members</button>
+      </div>
+      <div class="crm-add-row">
+        <input type="text" id="newMemberName" placeholder="New member name…" />
+        <select id="newMemberTier">
+          <option>Standard</option>
+          <option>Silver</option>
+          <option>Gold</option>
+        </select>
+        <button type="button" class="btn-primary" id="btnAddMember">+ Add Member</button>
+      </div>
+      <div id="crmFeedback" class="alert hidden" style="margin-bottom:1.2rem"></div>
+      <div class="table-wrap">
+        <table class="members-table" id="membersTable">
+          <thead>
+            <tr>
+              <th>ID</th><th>Name</th><th>Tier</th><th>Joined</th><th>Status</th><th>Check-ins</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="membersBody">
+            <tr><td colspan="7" class="table-empty">Click "Load Members" to view records.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- QR VERIFY -->
+  <section class="verify-section" id="verify">
+    <div class="verify-inner">
+      <h2 class="section-title" style="color:#fff">QR / Barcode Verification</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.7)">Scan or enter a code to verify membership status in real time.</p>
+      <div class="verify-card">
+        <div class="verify-input-group">
+          <input type="text" id="verifyCode" placeholder="Paste or type barcode / QR value…" />
+          <button class="btn-verify" id="btnVerify">Verify</button>
+        </div>
+        <div class="verify-result hidden" id="verifyResult"></div>
+        <div class="verify-mock-hint">
+          <small>Load a member below and copy their ID, or try any random text to see an invalid result.</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="nav-logo" style="margin-bottom:.5rem">
+          <span class="logo-rd" title="Replace with your company logo"><img src="/static/img/company-logo.png" alt="Company logo" onerror="this.style.display='none'; this.parentElement.textContent='LOGO';" /></span>
+          <span class="logo-text">Romax Digital</span>
+        </div>
+        <p style="color:rgba(255,255,255,.5);font-size:.85rem">Romax Digital Platform, Prototype</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://romax.co.uk/digital/" target="_blank">Romax Digital Platform</a>
+        <a href="https://romax.co.uk/digital/products/digital-membership-cards/" target="_blank">Digital Cards</a>
+        <a href="https://romax.co.uk/digital/contact-us/" target="_blank">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Prompt Modal -->
+  <div class="modal-overlay hidden" id="loginPromptModal">
+    <div class="modal">
+      <button class="modal-close" onclick="document.getElementById('loginPromptModal').classList.add('hidden')">&#10005;</button>
+      <h3>Log in to export a real pass</h3>
+      <p>Create a free account to save this design and export an actual Apple/Google Wallet pass instead of a preview.</p>
+      <a href="{{ url_for('auth.signup') }}" class="btn-primary" id="modalSignupLink" style="margin-top:1rem;width:100%;justify-content:center;display:flex">Sign Up Free</a>
+      <a href="{{ url_for('auth.login') }}" class="btn-ghost" style="margin-top:.6rem;width:100%;justify-content:center;display:flex">I already have an account</a>
+    </div>
+  </div>
+
+  <!-- Email Capture Modal -->
+  <div class="modal-overlay hidden" id="emailModal">
+    <div class="modal">
+      <button class="modal-close" onclick="document.getElementById('emailModal').classList.add('hidden')">✕</button>
+      <h3>Share Your Draft Pass</h3>
+      <p>Enter your email to receive the pass package and next steps from the Romax team.</p>
+      <input type="email" id="captureEmail" placeholder="your@email.com" />
+      <button class="btn-primary" id="btnSendEmail" style="margin-top:1rem;width:100%">Send to my email</button>
+      <div id="emailFeedback" class="hidden" style="margin-top:1rem;color:#4caf50;text-align:center">✓ Sent! The Romax team will be in touch.</div>
+    </div>
+  </div>
+
+  <script>
+    window.IS_LOGGED_IN = document.body.dataset.loggedIn === 'true';
+    window.WALLET_STATUS = {
+      apple: document.body.dataset.appleReady === 'true',
+      google: document.body.dataset.googleReady === 'true'
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

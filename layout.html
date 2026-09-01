@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Romax Digital{% endblock %}: Wallet Pass Creator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <span class="logo-rd" title="Replace with your company logo"><img src="/static/img/company-logo.png" alt="Company logo" onerror="this.style.display='none'; this.parentElement.textContent='LOGO';" /></span>
+      <span class="logo-text">Romax Digital</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('trial') }}#creator">Creator</a></li>
+      <li><a href="{{ url_for('trial') }}#crm">Members</a></li>
+      <li><a href="{{ url_for('trial') }}#verify">Verify</a></li>
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('portal.dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('portal.subscription') }}">Pricing</a></li>
+        <li><a href="{{ url_for('portal.wallet_settings') }}">Wallet Setup</a></li>
+        <li><a href="{{ url_for('auth.logout') }}" class="btn-nav">Log Out</a></li>
+      {% else %}
+        <li><a href="{{ url_for('portal.subscription') }}">Pricing</a></li>
+        <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+        <li><a href="{{ url_for('auth.signup') }}" class="btn-nav">Sign Up</a></li>
+      {% endif %}
+    </ul>
+    <button class="burger" id="burgerBtn" aria-label="Menu">&#9776;</button>
+  </nav>
+
+  <main class="auth-shell">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-stack">
+          {% for category, message in messages %}
+            <div class="alert {{ 'error' if category == 'error' else 'success' }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="nav-logo" style="margin-bottom:.5rem">
+          <span class="logo-rd" title="Replace with your company logo"><img src="/static/img/company-logo.png" alt="Company logo" onerror="this.style.display='none'; this.parentElement.textContent='LOGO';" /></span>
+          <span class="logo-text">Romax Digital</span>
+        </div>
+        <p style="color:rgba(255,255,255,.5);font-size:.85rem">Romax Digital Platform, Prototype</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://romax.co.uk/digital/" target="_blank">Romax Digital Platform</a>
+        <a href="https://romax.co.uk/digital/products/digital-membership-cards/" target="_blank">Digital Cards</a>
+        <a href="https://romax.co.uk/digital/contact-us/" target="_blank">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('burgerBtn')?.addEventListener('click', () => {
+      const links = document.querySelector('.nav-links');
+      if (!links) return;
+      const open = links.style.display === 'flex';
+      links.style.display = open ? 'none' : 'flex';
+      links.style.flexDirection = 'column';
+      links.style.position = 'absolute';
+      links.style.top = '64px';
+      links.style.right = '1rem';
+      links.style.background = 'var(--surface-2)';
+      links.style.border = '1px solid var(--border)';
+      links.style.padding = '1rem';
+      links.style.borderRadius = 'var(--radius-sm)';
+      links.style.gap = '.8rem';
+      links.style.zIndex = '200';
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

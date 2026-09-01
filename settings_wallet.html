@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block title %}Wallet Setup{% endblock %}
+{% block content %}
+<div class="dashboard-wrap">
+  <h2 class="section-title">Wallet Setup</h2>
+  <p class="section-sub">
+    Connect your organisation's own Apple &amp; Google Wallet credentials so every pass you export is a
+    real, installable, scannable pass — not just a JSON preview.
+  </p>
+
+  <div class="wallet-provider-card">
+    <div class="wallet-provider-head">
+      <h3 class="editor-title" style="margin:0">&#63743; Apple Wallet</h3>
+      <span class="badge-status {{ 'badge-ready' if current_user.apple_wallet_ready else 'badge-pending' }}">
+        {{ 'Connected' if current_user.apple_wallet_ready else 'Not connected' }}
+      </span>
+    </div>
+
+    <details class="setup-help" {{ 'open' if not current_user.apple_wallet_ready else '' }}>
+      <summary>Where do I get these?</summary>
+      <ol>
+        <li>Enrol in the <strong>Apple Developer Program</strong> and create a <strong>Pass Type ID</strong> under Certificates, Identifiers &amp; Profiles.</li>
+        <li>Generate a certificate for that Pass Type ID and export it, together with its private key, as <code>cert.pem</code> and <code>key.pem</code> (e.g. via Keychain Access → Export, then <code>openssl pkcs12 -in cert.p12 -clcerts -nokeys -out cert.pem</code> / <code>-nocerts -out key.pem</code>).</li>
+        <li>Download Apple's <strong>WWDR intermediate certificate</strong> and convert it to <code>wwdr.pem</code>.</li>
+        <li>Upload all three below, along with your Team ID and Pass Type Identifier.</li>
+      </ol>
+    </details>
+
+    <form method="POST" enctype="multipart/form-data" class="auth-form">
+      <input type="hidden" name="section" value="apple" />
+      <div class="field-grid">
+        <div class="field-group">
+          <label>Apple Team ID</label>
+          <input type="text" name="apple_team_id" value="{{ current_user.apple_team_id }}" placeholder="e.g. A1B2C3D4E5" />
+        </div>
+        <div class="field-group">
+          <label>Pass Type Identifier</label>
+          <input type="text" name="apple_pass_type_id" value="{{ current_user.apple_pass_type_id }}" placeholder="pass.co.uk.yourorg.membership" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Private Key Password (leave blank if none)</label>
+        <input type="password" name="apple_key_password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" />
+      </div>
+      <div class="field-grid" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="field-group">
+          <label>cert.pem</label>
+          <input type="file" name="apple_cert" accept=".pem,.crt" />
+        </div>
+        <div class="field-group">
+          <label>key.pem</label>
+          <input type="file" name="apple_key" accept=".pem,.key" />
+        </div>
+        <div class="field-group">
+          <label>wwdr.pem</label>
+          <input type="file" name="apple_wwdr" accept=".pem,.crt" />
+        </div>
+      </div>
+      <div class="pass-card-actions" style="margin-top:1rem">
+        <button type="submit" class="btn-update" style="width:auto">Save &amp; Verify</button>
+        {% if current_user.apple_certs_uploaded %}
+        <button type="submit" form="removeApple" class="btn-remove-field" style="width:auto;padding:0 1rem">Remove</button>
+        {% endif %}
+      </div>
+    </form>
+    <form id="removeApple" method="POST" action="{{ url_for('portal.wallet_settings_remove', provider='apple') }}"></form>
+  </div>
+
+  <div class="wallet-provider-card">
+    <div class="wallet-provider-head">
+      <h3 class="editor-title" style="margin:0">&#9737; Google Wallet</h3>
+      <span class="badge-status {{ 'badge-ready' if current_user.google_wallet_ready else 'badge-pending' }}">
+        {{ 'Connected' if current_user.google_wallet_ready else 'Not connected' }}
+      </span>
+    </div>
+
+    <details class="setup-help" {{ 'open' if not current_user.google_wallet_ready else '' }}>
+      <summary>Where do I get these?</summary>
+      <ol>
+        <li>Sign up for the <strong>Google Wallet API</strong> in Google Cloud Console and note your <strong>Issuer ID</strong> from the Google Pay &amp; Wallet Console.</li>
+        <li>Create a <strong>service account</strong>, grant it access to your Wallet issuer account, and download its JSON key file.</li>
+        <li>Upload the JSON key below along with your Issuer ID.</li>
+      </ol>
+    </details>
+
+    <form method="POST" enctype="multipart/form-data" class="auth-form">
+      <input type="hidden" name="section" value="google" />
+      <div class="field-grid">
+        <div class="field-group">
+          <label>Issuer ID</label>
+          <input type="text" name="google_issuer_id" value="{{ current_user.google_issuer_id }}" placeholder="e.g. 3388000000022123456" />
+        </div>
+        <div class="field-group">
+          <label>Class Suffix</label>
+          <input type="text" name="google_class_suffix" value="{{ current_user.google_class_suffix }}" placeholder="romax_generic_class" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Service Account JSON Key</label>
+        <input type="file" name="google_service_account" accept=".json" />
+        {% if current_user.google_service_account_email %}
+        <small style="color:var(--text-muted)">Current: {{ current_user.google_service_account_email }}</small>
+        {% endif %}
+      </div>
+      <div class="pass-card-actions" style="margin-top:1rem">
+        <button type="submit" class="btn-update" style="width:auto">Save &amp; Verify</button>
+        {% if current_user.google_creds_uploaded %}
+        <button type="submit" form="removeGoogle" class="btn-remove-field" style="width:auto;padding:0 1rem">Remove</button>
+        {% endif %}
+      </div>
+    </form>
+    <form id="removeGoogle" method="POST" action="{{ url_for('portal.wallet_settings_remove', provider='google') }}"></form>
+  </div>
+</div>
+{% endblock %}
