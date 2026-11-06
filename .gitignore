@@ -1,0 +1,28 @@
+# Runtime data — never commit (database, secret key, uploaded Wallet credentials)
+instance/
+*.db
+*.sqlite3
+secret_key.txt
+*.pem
+*.p12
+service_account*.json
+
+# Generated passes
+passes/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

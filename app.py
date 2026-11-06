@@ -152,11 +152,16 @@ def create_app():
 
     @app.route("/api/download/<path:filename>")
     def api_download(filename):
-        path = os.path.join(PASSES_DIR, filename)
-        if not os.path.exists(path):
+        # Only serve generated passes: a bare file name inside PASSES_DIR.
+        # Rejects "../instance/secret_key.txt", absolute paths, etc.
+        safe_name = os.path.basename(filename)
+        if safe_name != filename or not safe_name.endswith(".pkpass"):
             return jsonify({"error": "File not found"}), 404
-        mimetype = "application/vnd.apple.pkpass" if filename.endswith(".pkpass") else "application/zip"
-        return send_file(path, as_attachment=True, download_name=filename, mimetype=mimetype)
+        path = os.path.join(PASSES_DIR, safe_name)
+        if not os.path.isfile(path):
+            return jsonify({"error": "File not found"}), 404
+        return send_file(path, as_attachment=True, download_name=safe_name,
+                         mimetype="application/vnd.apple.pkpass")
 
     # Member CRM — backed by the Member model, not hardcoded data.
     # Logged-in users see/manage their own members; signed-out visitors
@@ -227,4 +232,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Debug mode exposes an interactive debugger; only enable it explicitly.
+    app.run(debug=os.environ.get("FLASK_DEBUG") == "1", port=5000)

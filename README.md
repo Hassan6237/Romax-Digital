@@ -1,31 +1,29 @@
 # Romax Digital – Website to Wallet Pass Creator
-### Romax Digital Platform — Prototype
+
+> 🥇 **Winner of the Romax Digital Challenge at Hackabury 2026 (1st of 107 entrants).** The win led to a software development internship at Romax Digital.
+
+Paste any company's website URL and get a branded **Apple Wallet** (`.pkpass`) or **Google Wallet** pass. The app scrapes the site's logo and colours, generates three design variants and lets you edit and preview the pass. It then exports a correctly structured pass, signed when Wallet credentials are connected.
+
+**Stack:** Python · Flask · Flask-Login · SQLAlchemy (SQLite) · BeautifulSoup · Pillow · `cryptography` (PKCS#7) · PyJWT · vanilla JS
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# 1. Install Python dependencies
+git clone https://github.com/Hassan6237/Romax-Digital.git
+cd Romax-Digital
+python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
-# 2. Run the server
 python app.py
-
-# 3. Open your browser
 # → http://localhost:5000
 ```
 
-Or use the start script:
-```bash
-bash start.sh
-```
-
-A local SQLite database (`instance/romax.db`) is created automatically on first run — no extra setup needed to try Sign Up / Log In.
+A local SQLite database and a random session secret key are created automatically in `instance/` on first run. That folder is git-ignored, so no credentials ever live in the repository. To set the key yourself, export `ROMAX_SECRET_KEY`. Set `FLASK_DEBUG=1` only for local debugging.
 
 ---
 
-## ✨ What's new in this version
+## ✨ Features
 
 1. **User accounts (Sign Up / Log In)** — session-based auth (Flask-Login), so people can save designs and connect their own Wallet credentials.
 2. **3 selectable design variants from one scrape** — *Brand Bold*, *Minimal Light*, *Dark Contrast* — all built from the exact colours pulled from the scraped site, no re-scraping needed. Pick one, it drives the whole editor + preview.
@@ -41,7 +39,7 @@ The original creator flow, colour scheme, and layout are unchanged — this is a
 ## 📁 Project Structure
 
 ```
-walletpass/
+romax-digital/
 ├── app.py                  ← Flask app factory + API routes
 ├── auth.py                 ← Sign up / Log in / Log out (blueprint)
 ├── portal.py                ← Dashboard, Wallet Setup, saved-pass API (blueprint)
@@ -65,7 +63,7 @@ walletpass/
 │   └── js/main.js
 │
 ├── instance/                 ← SQLite DB + per-user Wallet credentials (gitignored)
-└── passes/                   ← Generated .pkpass files (auto-created)
+└── passes/                   ← Generated .pkpass files (auto-created, gitignored)
 ```
 
 ---
@@ -133,4 +131,13 @@ Romax Digital helps organisations issue branded, personalised and secure digital
 
 ---
 
-*Romax Digital Platform — Prototype*
+## 🔒 Security notes
+
+- Passwords are hashed with Werkzeug (`generate_password_hash`) and never stored in plain text.
+- The session secret key, database and uploaded Wallet certificates live in `instance/` and are git-ignored.
+- Pass downloads are restricted to generated `.pkpass` files, which blocks path traversal.
+- Debug mode is off unless `FLASK_DEBUG=1` is set.
+
+---
+
+*Hackathon prototype built by [Hassan Ali](https://github.com/Hassan6237). Romax Digital is a trademark of its owner.*
