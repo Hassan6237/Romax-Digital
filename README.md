@@ -140,4 +140,9 @@ Romax Digital helps organisations issue branded, personalised and secure digital
 
 ---
 
-*Hackathon prototype built by [Hassan Ali](https://github.com/Hassan6237). Romax Digital is a trademark of its owner.*
+## 👤 Author
+
+**Hassan Ali**, BSc Computer Science (Year in Industry) student at the University of Kent<br/>
+[GitHub](https://github.com/Hassan6237) · [LinkedIn](https://www.linkedin.com/in/hassan623)
+
+*Hackathon prototype. Romax Digital is a trademark of its owner.*
